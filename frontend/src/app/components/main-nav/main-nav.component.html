@@ -1,0 +1,35 @@
+<nav class="main-nav" *ngIf="currentUser()">
+  <div class="nav-content">
+    <a routerLink="/bienvenida" class="brand">
+      <span class="icon">🏥</span>
+      <span class="text">Clínica Online</span>
+    </a>
+
+    <div class="nav-links">
+      <a
+        *ngFor="let item of getNavItems()"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        <span class="icon">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </a>
+    </div>
+
+    <div class="user-menu">
+      <button class="user-button" (click)="toggleMenu()">
+        <span class="avatar">👤</span>
+        <span class="name">{{ getNombreCompleto() }}</span>
+        <span class="arrow">▼</span>
+      </button>
+
+      <div class="dropdown" *ngIf="showMenu()" (click)="$event.stopPropagation()">
+        <button class="dropdown-item logout" (click)="logout()">
+          <span class="icon">🚪</span>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,74 @@
+<section class="hero" [@fadeIn]>
+  <header class="topbar" aria-label="Clínica Online">
+    <div class="brand">
+      <span class="icon">🏥</span>
+      <span>Clínica Monllor</span>
+    </div>
+    <nav class="top-actions">
+      <div *ngIf="autenticado() && currentUser()" class="user-info">
+        <span class="user-name">{{ currentUser()?.nombre }} {{ currentUser()?.apellido }}</span>
+        <span class="user-role">{{ currentUser()?.role }}</span>
+      </div>
+      <a class="btn btn-primary" routerLink="/login" *ngIf="!autenticado()">
+        <span>🔐</span> Ingresar
+      </a>
+      <button class="btn btn-secondary" (click)="logout()" *ngIf="autenticado()">
+        <span>🚪</span> Salir
+      </button>
+    </nav>
+  </header>
+
+  <div class="hero-grid">
+    <div class="copy">
+      <h1>Clínica Monllor</h1>
+      <p class="lead">
+        Cuidamos tu salud con tecnología, compromiso y calidez humana.
+        Turnos online, seguimiento personalizado y atención profesional.
+      </p>
+
+      <div class="chips">
+        <div class="chip glass">
+          <h3><span class="chip-icon">🏷️</span> Especialidades</h3>
+          <ul>
+            <li>Clínica Médica · Pediatría · Cardiología</li>
+            <li>Dermatología · Nutrición · Psicología</li>
+          </ul>
+        </div>
+
+        <div class="chip glass">
+          <h3><span class="chip-icon">🕐</span> Horarios de Atención</h3>
+          <ul>
+            <li>Lunes a Viernes: 8:00 a 19:00 hs</li>
+            <li>Sábados: 9:00 a 14:00 hs</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Botones para usuarios NO autenticados -->
+      <div class="cta-row" *ngIf="!autenticado()">
+        <button class="btn btn-flat btn-primary" (click)="irALogin()">
+          <span>🔐</span> Iniciar Sesión
+        </button>
+        <button class="btn btn-raised btn-accent" (click)="irARegistro()">
+          <span>➕</span> Registrarse
+        </button>
+      </div>
+
+      <!-- Botones para usuarios autenticados -->
+      <div class="cta-row" *ngIf="autenticado() && currentUser()">
+        <div class="welcome-message">
+          <p>¡Bienvenido/a, {{ currentUser()?.nombre }}!</p>
+          <p class="role-badge">Rol: {{ currentUser()?.role }}</p>
+        </div>
+        <button class="btn btn-flat btn-primary" (click)="irADashboard()">
+          <span>📊</span> Ir a mi Panel
+        </button>
+        <a class="btn btn-raised btn-accent" routerLink="/admin/users" *ngIf="currentUser()?.role === 'ADMIN'">
+          <span>👥</span> Administrar Usuarios
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">Clínica Online — UTN</footer>
+</section>

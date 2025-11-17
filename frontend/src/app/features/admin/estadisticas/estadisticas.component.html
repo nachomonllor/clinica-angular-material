@@ -1,0 +1,193 @@
+<main class="page">
+  <section class="card">
+    <header class="card-header">
+      <div>
+        <h1>Estadísticas y Reportes</h1>
+        <p class="subtitle">Visualizá y descargá informes de la clínica</p>
+      </div>
+    </header>
+
+    <!-- Filtros de Fecha -->
+    <section class="filters-section">
+      <div class="filters">
+        <label>
+          Desde
+          <input type="date" [value]="desde()" (change)="desde.set($any($event.target).value)" />
+        </label>
+        <label>
+          Hasta
+          <input type="date" [value]="hasta()" (change)="hasta.set($any($event.target).value)" />
+        </label>
+        <button class="btn primary" (click)="applyFilters()" appElevateOnHover>Aplicar Filtros</button>
+        <button class="btn secondary" (click)="clearFilters()" appElevateOnHover>Limpiar</button>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button
+        class="tab"
+        [class.active]="activeTab() === 'logins'"
+        (click)="changeTab('logins')"
+      >
+        Log de Ingresos
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab() === 'turnos-especialidad'"
+        (click)="changeTab('turnos-especialidad')"
+      >
+        Turnos por Especialidad
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab() === 'turnos-dia'"
+        (click)="changeTab('turnos-dia')"
+      >
+        Turnos por Día
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab() === 'turnos-medico'"
+        (click)="changeTab('turnos-medico')"
+      >
+        Turnos por Médico
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab() === 'turnos-finalizados-medico'"
+        (click)="changeTab('turnos-finalizados-medico')"
+      >
+        Turnos Finalizados por Médico
+      </button>
+    </div>
+
+    <!-- Contenido de cada tab -->
+    <div class="tab-content">
+      <!-- Log de Ingresos -->
+      <div *ngIf="activeTab() === 'logins'" class="tab-panel">
+        <div class="panel-header">
+          <h2>Log de Ingresos al Sistema</h2>
+          <div class="panel-actions">
+            <button class="btn small" (click)="descargarExcel()">Descargar Excel</button>
+            <button class="btn small" (click)="descargarPDF()">Descargar PDF</button>
+          </div>
+        </div>
+
+        <div *ngIf="loading().logins" class="loading">Cargando datos...</div>
+
+        <div *ngIf="!loading().logins && logins().length === 0" class="empty">
+          No hay datos de ingresos para el período seleccionado.
+        </div>
+
+        <table *ngIf="!loading().logins && logins().length > 0" class="data-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Fecha y Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logins()" appElevateOnHover>
+              <td>{{ log.user.nombre }} {{ log.user.apellido }}</td>
+              <td>{{ log.user.email }}</td>
+              <td>{{ log.user.role | roleLabel }}</td>
+              <td>{{ log.createdAt | localDate: 'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Turnos por Especialidad -->
+      <div *ngIf="activeTab() === 'turnos-especialidad'" class="tab-panel">
+        <div class="panel-header">
+          <h2>Turnos por Especialidad</h2>
+          <div class="panel-actions">
+            <button class="btn small" (click)="descargarGrafico()">Descargar Gráfico</button>
+            <button class="btn small" (click)="descargarExcel()">Descargar Excel</button>
+            <button class="btn small" (click)="descargarPDF()">Descargar PDF</button>
+          </div>
+        </div>
+
+        <div *ngIf="loading()['turnos-especialidad']" class="loading">Cargando datos...</div>
+
+        <div *ngIf="!loading()['turnos-especialidad'] && turnosPorEspecialidad().length === 0" class="empty">
+          No hay datos para el período seleccionado.
+        </div>
+
+        <div *ngIf="!loading()['turnos-especialidad'] && turnosPorEspecialidad().length > 0" class="chart-container">
+          <canvas id="chart-turnos-especialidad"></canvas>
+        </div>
+      </div>
+
+      <!-- Turnos por Día -->
+      <div *ngIf="activeTab() === 'turnos-dia'" class="tab-panel">
+        <div class="panel-header">
+          <h2>Turnos por Día</h2>
+          <div class="panel-actions">
+            <button class="btn small" (click)="descargarGrafico()">Descargar Gráfico</button>
+            <button class="btn small" (click)="descargarExcel()">Descargar Excel</button>
+            <button class="btn small" (click)="descargarPDF()">Descargar PDF</button>
+          </div>
+        </div>
+
+        <div *ngIf="loading()['turnos-dia']" class="loading">Cargando datos...</div>
+
+        <div *ngIf="!loading()['turnos-dia'] && turnosPorDia().length === 0" class="empty">
+          No hay datos para el período seleccionado.
+        </div>
+
+        <div *ngIf="!loading()['turnos-dia'] && turnosPorDia().length > 0" class="chart-container">
+          <canvas id="chart-turnos-dia"></canvas>
+        </div>
+      </div>
+
+      <!-- Turnos por Médico -->
+      <div *ngIf="activeTab() === 'turnos-medico'" class="tab-panel">
+        <div class="panel-header">
+          <h2>Turnos por Médico</h2>
+          <div class="panel-actions">
+            <button class="btn small" (click)="descargarGrafico()">Descargar Gráfico</button>
+            <button class="btn small" (click)="descargarExcel()">Descargar Excel</button>
+            <button class="btn small" (click)="descargarPDF()">Descargar PDF</button>
+          </div>
+        </div>
+
+        <div *ngIf="loading()['turnos-medico']" class="loading">Cargando datos...</div>
+
+        <div *ngIf="!loading()['turnos-medico'] && turnosPorMedico().length === 0" class="empty">
+          No hay datos para el período seleccionado.
+        </div>
+
+        <div *ngIf="!loading()['turnos-medico'] && turnosPorMedico().length > 0" class="chart-container">
+          <canvas id="chart-turnos-medico"></canvas>
+        </div>
+      </div>
+
+      <!-- Turnos Finalizados por Médico -->
+      <div *ngIf="activeTab() === 'turnos-finalizados-medico'" class="tab-panel">
+        <div class="panel-header">
+          <h2>Turnos Finalizados por Médico</h2>
+          <div class="panel-actions">
+            <button class="btn small" (click)="descargarGrafico()">Descargar Gráfico</button>
+            <button class="btn small" (click)="descargarExcel()">Descargar Excel</button>
+            <button class="btn small" (click)="descargarPDF()">Descargar PDF</button>
+          </div>
+        </div>
+
+        <div *ngIf="loading()['turnos-finalizados-medico']" class="loading">Cargando datos...</div>
+
+        <div *ngIf="!loading()['turnos-finalizados-medico'] && turnosFinalizadosPorMedico().length === 0" class="empty">
+          No hay datos para el período seleccionado.
+        </div>
+
+        <div *ngIf="!loading()['turnos-finalizados-medico'] && turnosFinalizadosPorMedico().length > 0" class="chart-container">
+          <canvas id="chart-turnos-finalizados-medico"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+

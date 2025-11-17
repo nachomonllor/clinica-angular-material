@@ -1,0 +1,108 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build outputs
+dist/
+backend/dist/
+frontend/dist/
+build/
+out-tsc/
+bazel-out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+libpeerconnection.log
+testem.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# IDE
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# Testing
+coverage/
+.nyc_output/
+/typings/
+
+# Temporary files
+.temp/
+.tmp/
+tmp-pruebas/
+*.cookies
+admin*.cookies
+patient.cookies
+specialist.cookies
+
+# Uploads (imágenes subidas por usuarios)
+backend/uploads/
+uploads/
+
+# Prisma generated files
+backend/generated/prisma/
+generated/prisma/
+
+# Miscellaneous
+/.angular/cache
+.angular/cache
+frontend/.angular/cache
+.sass-cache/
+/connect.lock
+
+# Backend specific
+backend/generated/
+backend/uploads/
+backend/.env
+backend/.env.local
+backend/*.pid
+backend/*.pid.lock
+
+# Frontend specific
+frontend/.angular/
+frontend/out-tsc/
+frontend/bazel-out/
+frontend/.env
+frontend/.env.local
+frontend/connect.lock
+frontend/coverage/
+frontend/.sass-cache/
+frontend/.vscode
+
+# Runtime and process files
+*.pid
+*.pid.lock
+*.seed
+pids/
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+

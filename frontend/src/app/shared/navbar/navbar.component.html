@@ -1,0 +1,31 @@
+<nav class="navbar" *ngIf="autenticado()">
+  <div class="navbar-content">
+    <button class="brand" (click)="irAInicio()">
+      <span class="brand-icon">🏥</span>
+      <span class="brand-text">Clínica Online</span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <div class="user-info">
+      <span class="user-name">{{ nombreUsuario() }}</span>
+      <span class="user-role">{{ rolUsuario() }}</span>
+    </div>
+
+    <button *ngIf="esEspecialista()" class="btn-nav" routerLink="/mis-pacientes">
+      <span>Mis Pacientes</span>
+    </button>
+
+    <button *ngIf="esAdmin()" class="btn-nav" routerLink="/admin/estadisticas">
+      <span>Estadísticas</span>
+    </button>
+
+    <button class="btn-profile" routerLink="/mi-perfil">
+      <span>Mi Perfil</span>
+    </button>
+
+    <button class="logout-btn" (click)="logout()">
+      <span>Salir</span>
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,257 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PATIENT
+  SPECIALIST
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum SlotDuration {
+  MIN_5
+  MIN_10
+  MIN_15
+  MIN_30
+}
+
+enum SlotStatus {
+  FREE
+  RESERVED
+  CANCELLED
+}
+
+enum AppointmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  DONE
+}
+
+model User {
+  id                  String                   @id @default(uuid())
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  nombre              String
+  apellido            String
+  edad                Int
+  dni                 String                   @unique
+  email               String                   @unique
+  passwordHash        String
+  role                UserRole
+  status              UserStatus               @default(PENDING)
+  emailVerified       Boolean                  @default(false)
+  paciente            PacienteProfile?
+  especialista        EspecialistaProfile?
+  admin               AdminProfile?
+  tokens              EmailVerificationToken[]
+  patientAppointments Appointment[]            @relation("PatientAppointments")
+  createdAppointments Appointment[]            @relation("CreatedAppointments")
+  historyLogs         AppointmentHistory[]
+  medicalRecords      MedicalRecord[]
+  loginLogs           LoginLog[]
+}
+
+model PacienteProfile {
+  id         Int     @id @default(autoincrement())
+  userId     String  @unique
+  obraSocial String
+  imagenUno  String?
+  imagenDos  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EspecialistaProfile {
+  id             Int                        @id @default(autoincrement())
+  userId         String                     @unique
+  imagen         String?
+  notas          String?
+  user           User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills         EspecialistaEspecialidad[]
+  availability   SpecialistAvailability[]
+  slots          AppointmentSlot[]
+  appointments   Appointment[]
+  medicalRecords MedicalRecord[]
+}
+
+model AdminProfile {
+  id     Int     @id @default(autoincrement())
+  userId String  @unique
+  imagen String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Especialidad {
+  id           Int                        @id @default(autoincrement())
+  nombre       String
+  slug         String                     @unique
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+  doctors      EspecialistaEspecialidad[]
+  availability SpecialistAvailability[]
+  slots        AppointmentSlot[]
+  appointments Appointment[]
+}
+
+model EspecialistaEspecialidad {
+  especialistaId Int
+  especialidadId Int
+
+  especialista EspecialistaProfile @relation(fields: [especialistaId], references: [id], onDelete: Cascade)
+  especialidad Especialidad        @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+
+  @@id([especialistaId, especialidadId])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SpecialistAvailability {
+  id             Int                 @id @default(autoincrement())
+  especialistaId Int
+  especialidadId Int
+  dayOfWeek      Weekday
+  startMinute    Int
+  endMinute      Int
+  duration       SlotDuration
+  active         Boolean             @default(true)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  specialist     EspecialistaProfile @relation(fields: [especialistaId], references: [id], onDelete: Cascade)
+  especialidad   Especialidad        @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+  slots          AppointmentSlot[]
+
+  @@index([especialistaId, especialidadId])
+}
+
+model AppointmentSlot {
+  id                       String                  @id @default(uuid())
+  especialistaId           Int
+  especialidadId           Int
+  date                     DateTime
+  startAt                  DateTime
+  endAt                    DateTime
+  duration                 SlotDuration
+  status                   SlotStatus              @default(FREE)
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+  appointment              Appointment?
+  specialist               EspecialistaProfile     @relation(fields: [especialistaId], references: [id], onDelete: Cascade)
+  especialidad             Especialidad            @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+  specialistAvailability   SpecialistAvailability? @relation(fields: [specialistAvailabilityId], references: [id])
+  specialistAvailabilityId Int?
+
+  @@unique([especialistaId, startAt])
+  @@index([especialistaId, date])
+  @@index([especialidadId, date])
+}
+
+model Appointment {
+  id               String               @id @default(uuid())
+  slotId           String               @unique
+  especialistaId   Int
+  especialidadId   Int
+  pacienteId       String
+  creadoPorId      String?
+  status           AppointmentStatus    @default(PENDING)
+  cancelReason     String?
+  rejectReason     String?
+  specialistReview String?
+  patientComment   String?
+  createdAt        DateTime             @default(now())
+  acceptedAt       DateTime?
+  completedAt      DateTime?
+  slot             AppointmentSlot      @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  specialist       EspecialistaProfile  @relation(fields: [especialistaId], references: [id], onDelete: Cascade)
+  especialidad     Especialidad         @relation(fields: [especialidadId], references: [id], onDelete: Cascade)
+  paciente         User                 @relation("PatientAppointments", fields: [pacienteId], references: [id], onDelete: Cascade)
+  creadoPor        User?                @relation("CreatedAppointments", fields: [creadoPorId], references: [id], onDelete: SetNull)
+  history          AppointmentHistory[]
+  medicalRecord    MedicalRecord?
+
+  @@index([pacienteId, status])
+  @@index([especialistaId, status])
+  @@index([especialidadId, status])
+}
+
+model AppointmentHistory {
+  id            Int               @id @default(autoincrement())
+  appointmentId String
+  actorId       String?
+  action        AppointmentStatus
+  note          String?
+  createdAt     DateTime          @default(now())
+  appointment   Appointment       @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  actor         User?             @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model MedicalRecord {
+  id             String              @id @default(uuid())
+  appointmentId  String              @unique
+  pacienteId     String
+  especialistaId Int
+  altura         Int
+  peso           Int
+  temperatura    Float
+  presion        String
+  extraData      Json?               @db.Json
+  searchText     String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  appointment    Appointment         @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  paciente       User                @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+  especialista   EspecialistaProfile @relation(fields: [especialistaId], references: [id], onDelete: Cascade)
+
+  @@index([pacienteId])
+  @@index([especialistaId])
+}
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  createdAt DateTime @default(now())
+  ip        String?
+  userAgent String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

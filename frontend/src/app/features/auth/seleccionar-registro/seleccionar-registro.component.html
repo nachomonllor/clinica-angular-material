@@ -1,0 +1,21 @@
+<div class="selector-wrapper">
+  <div class="selector-card">
+    <h1>Elegí tu tipo de cuenta</h1>
+    <p class="subtitle">Mostramos el formulario acorde a tu perfil</p>
+
+    <div class="selector-column">
+      <button
+        *ngFor="let opcion of opciones"
+        type="button"
+        class="selector-button"
+        (click)="seleccionar(opcion)"
+        [style.--accent]="opcion.color">
+        <div class="info">
+          <span class="rol">{{ opcion.rol }}</span>
+          <span class="descripcion">{{ opcion.descripcion }}</span>
+        </div>
+        <span class="arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
