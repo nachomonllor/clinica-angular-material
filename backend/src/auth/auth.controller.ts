@@ -69,7 +69,7 @@ export class AuthController {
           
           // Si no hay Set-Cookie, intentar establecerla manualmente
           if (!setCookieHeader && req.sessionID) {
-            const cookieName = req.session.cookie.name || 'connect.sid';
+            const cookieName = 'connect.sid'; // Nombre configurado en main.ts
             const cookieValue = req.sessionID;
             const cookieOptions = req.session.cookie;
             
