@@ -8,24 +8,66 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Configurar CORS para producción (cross-origin) o desarrollo (same-origin)
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
+  const nodeEnv = process.env.NODE_ENV || "development";
+  const isProduction = nodeEnv === "production";
+  
+  // Determinar si frontend y backend están en dominios/puertos diferentes
+  const hasFrontendUrl = !!process.env.FRONTEND_URL;
+  const isCrossOrigin = hasFrontendUrl || !isProduction;
+  
+  // En producción con servicios separados, permitir el dominio del frontend explícitamente
+  // En desarrollo, permitir localhost:4200 explícitamente
+  let corsOrigin: string | boolean;
+  if (isProduction && hasFrontendUrl) {
+    corsOrigin = process.env.FRONTEND_URL;
+  } else if (!isProduction) {
+    // En desarrollo, permitir localhost:4200 y localhost:3000
+    corsOrigin = ["http://localhost:4200", "http://localhost:3000"];
+  } else {
+    corsOrigin = true;
+  }
+  
   app.enableCors({
-    origin: true,
+    origin: corsOrigin,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
 
   app.use(cookieParser());
+  
+  // Configurar cookies de sesión para soportar cross-origin
+  const cookieConfig: any = {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24, // 24 horas
+  };
+  
+  // Para producción HTTPS con dominios diferentes, usar sameSite: "none" y secure: true
+  // Para desarrollo o localhost, usar sameSite: "lax" (funciona entre puertos diferentes de localhost)
+  if (isProduction && hasFrontendUrl) {
+    // Producción con servicios separados en HTTPS
+    cookieConfig.sameSite = "none";
+    cookieConfig.secure = true; // Requerido para sameSite: "none"
+  } else {
+    // Desarrollo o mismo dominio: sameSite: "lax" funciona para localhost:4200 -> localhost:3000
+    cookieConfig.sameSite = "lax";
+    cookieConfig.secure = false;
+  }
+  
   app.use(
     session({
       secret: process.env.SESSION_SECRET ?? "change-me",
       resave: false,
       saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60 * 24,
-      },
+      cookie: cookieConfig,
     }),
   );
+  
+  console.log(`[Main] CORS configurado para origen: ${corsOrigin}`);
+  console.log(`[Main] Cookies configuradas: sameSite=${cookieConfig.sameSite}, secure=${cookieConfig.secure}`);
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -25,8 +25,8 @@ export const routeAnimations = trigger("routeAnimations", [
       [
         style({ opacity: 1, transform: "translateY(0%)" }),
         animate(
-          "300ms ease-in-out",
-          style({ opacity: 0, transform: "translateY(-20px)" }),
+          "500ms ease-in-out",
+          style({ opacity: 0, transform: "translateY(-15px)" }),
         ),
       ],
       { optional: true },
@@ -35,9 +35,9 @@ export const routeAnimations = trigger("routeAnimations", [
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateY(20px)" }),
+        style({ opacity: 0, transform: "translateY(15px)" }),
         animate(
-          "300ms ease-out",
+          "600ms ease-out",
           style({ opacity: 1, transform: "translateY(0%)" }),
         ),
       ],
@@ -52,10 +52,10 @@ export const routeAnimations = trigger("routeAnimations", [
 export const fadeInAnimation = trigger("fadeIn", [
   transition(":enter", [
     style({ opacity: 0 }),
-    animate("400ms ease-out", style({ opacity: 1 })),
+    animate("600ms ease-out", style({ opacity: 1 })),
   ]),
   transition(":leave", [
-    animate("200ms ease-in", style({ opacity: 0 })),
+    animate("400ms ease-in", style({ opacity: 0 })),
   ]),
 ]);
 
@@ -80,15 +80,15 @@ export const slideFromRightAnimation = trigger("slideFromRight", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateX(0%)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateX(-20px)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateX(-15px)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateX(20px)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
+        style({ opacity: 0, transform: "translateX(15px)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
       ],
       { optional: true },
     ),
@@ -116,15 +116,15 @@ export const slideFromLeftAnimation = trigger("slideFromLeft", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateX(0%)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateX(20px)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateX(15px)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateX(-20px)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
+        style({ opacity: 0, transform: "translateX(-15px)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
       ],
       { optional: true },
     ),
@@ -152,15 +152,15 @@ export const scaleInAnimation = trigger("scaleIn", [
       ":leave",
       [
         style({ opacity: 1, transform: "scale(1)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "scale(0.95)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "scale(0.96)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "scale(0.95)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "scale(1)" })),
+        style({ opacity: 0, transform: "scale(0.96)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "scale(1)" })),
       ],
       { optional: true },
     ),
@@ -188,15 +188,15 @@ export const rotateFadeAnimation = trigger("rotateFade", [
       ":leave",
       [
         style({ opacity: 1, transform: "rotate(0deg)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "rotate(-5deg)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "rotate(-3deg)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "rotate(5deg)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "rotate(0deg)" })),
+        style({ opacity: 0, transform: "rotate(3deg)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "rotate(0deg)" })),
       ],
       { optional: true },
     ),
@@ -224,16 +224,16 @@ export const bounceInAnimation = trigger("bounceIn", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateY(0) scale(1)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateY(10px) scale(0.9)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateY(10px) scale(0.95)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateY(30px) scale(0.8)" }),
+        style({ opacity: 0, transform: "translateY(25px) scale(0.9)" }),
         animate(
-          "400ms cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+          "700ms cubic-bezier(0.34, 1.56, 0.64, 1)",
           style({ opacity: 1, transform: "translateY(0) scale(1)" }),
         ),
       ],
@@ -264,15 +264,15 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateX(0%)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateX(-20px)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateX(-15px)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateX(20px)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
+        style({ opacity: 0, transform: "translateX(15px)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
       ],
       { optional: true },
     ),
@@ -295,15 +295,15 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       ":leave",
       [
         style({ opacity: 1, transform: "scale(1)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "scale(0.95)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "scale(0.96)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "scale(0.95)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "scale(1)" })),
+        style({ opacity: 0, transform: "scale(0.96)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "scale(1)" })),
       ],
       { optional: true },
     ),
@@ -327,15 +327,15 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateX(0%)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateX(20px)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateX(15px)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateX(-20px)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
+        style({ opacity: 0, transform: "translateX(-15px)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "translateX(0%)" })),
       ],
       { optional: true },
     ),
@@ -359,16 +359,16 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       ":leave",
       [
         style({ opacity: 1, transform: "translateY(0) scale(1)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "translateY(10px) scale(0.9)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "translateY(10px) scale(0.95)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateY(30px) scale(0.8)" }),
+        style({ opacity: 0, transform: "translateY(25px) scale(0.9)" }),
         animate(
-          "400ms cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+          "700ms cubic-bezier(0.34, 1.56, 0.64, 1)",
           style({ opacity: 1, transform: "translateY(0) scale(1)" }),
         ),
       ],
@@ -394,15 +394,15 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       ":leave",
       [
         style({ opacity: 1, transform: "rotate(0deg)" }),
-        animate("300ms ease-in-out", style({ opacity: 0, transform: "rotate(-5deg)" })),
+        animate("500ms ease-in-out", style({ opacity: 0, transform: "rotate(-3deg)" })),
       ],
       { optional: true },
     ),
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "rotate(5deg)" }),
-        animate("300ms ease-out", style({ opacity: 1, transform: "rotate(0deg)" })),
+        style({ opacity: 0, transform: "rotate(3deg)" }),
+        animate("600ms ease-out", style({ opacity: 1, transform: "rotate(0deg)" })),
       ],
       { optional: true },
     ),
@@ -427,8 +427,8 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       [
         style({ opacity: 1, transform: "translateY(0%)" }),
         animate(
-          "300ms ease-in-out",
-          style({ opacity: 0, transform: "translateY(-20px)" }),
+          "500ms ease-in-out",
+          style({ opacity: 0, transform: "translateY(-15px)" }),
         ),
       ],
       { optional: true },
@@ -436,9 +436,9 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateY(20px)" }),
+        style({ opacity: 0, transform: "translateY(15px)" }),
         animate(
-          "300ms ease-out",
+          "600ms ease-out",
           style({ opacity: 1, transform: "translateY(0%)" }),
         ),
       ],
@@ -465,8 +465,8 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
       [
         style({ opacity: 1, transform: "translateY(0%)" }),
         animate(
-          "300ms ease-in-out",
-          style({ opacity: 0, transform: "translateY(-20px)" }),
+          "500ms ease-in-out",
+          style({ opacity: 0, transform: "translateY(-15px)" }),
         ),
       ],
       { optional: true },
@@ -474,9 +474,9 @@ export const routeAnimationsAdvanced = trigger("routeAnimationsAdvanced", [
     query(
       ":enter",
       [
-        style({ opacity: 0, transform: "translateY(20px)" }),
+        style({ opacity: 0, transform: "translateY(15px)" }),
         animate(
-          "300ms ease-out",
+          "600ms ease-out",
           style({ opacity: 1, transform: "translateY(0%)" }),
         ),
       ],

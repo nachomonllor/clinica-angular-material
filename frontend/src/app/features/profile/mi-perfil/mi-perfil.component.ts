@@ -701,9 +701,10 @@ export class MiPerfilComponent implements OnInit {
     }
     
     if (this.puedeGestionarDisponibilidades()) {
-      // Solo cargar especialidades si el usuario está autenticado y es SPECIALIST o ADMIN
+      // Solo cargar especialidades y disponibilidades si el usuario es SPECIALIST
+      // (Los admins no tienen especialidades, no necesitan gestionar disponibilidades)
       const user = this.currentUser();
-      if (user && (user.role === "SPECIALIST" || user.role === "ADMIN")) {
+      if (user && user.role === "SPECIALIST") {
         this.loadEspecialidades();
         this.loadAvailabilities();
       }
@@ -749,8 +750,13 @@ export class MiPerfilComponent implements OnInit {
       return;
     }
     
-    // Usar el endpoint "me/specialties" que no requiere especialistaId
-    // Solo funciona para SPECIALIST o ADMIN autenticados
+    // Verificar que el usuario sea especialista antes de llamar al endpoint
+    if (user.role !== "SPECIALIST") {
+      console.warn("[MiPerfil] Solo los especialistas pueden cargar especialidades");
+      return;
+    }
+    
+    // Usar el endpoint "me/specialties" que solo funciona para SPECIALIST
     this.usersService.getMySpecialties().subscribe({
       next: (especialidades) => {
         this.especialidadesDisponibles.set(especialidades);

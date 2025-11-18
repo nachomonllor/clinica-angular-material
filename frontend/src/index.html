@@ -10,9 +10,15 @@
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <!-- Inyectar API_BASE_URL desde variable de entorno o usar URL por defecto del backend -->
   <script>
-    // Si hay una variable de entorno API_BASE_URL, usarla (para servicios separados en Railway)
-    // Si no, el api-config.ts usará rutas relativas o localhost según corresponda
-    window.__API_BASE_URL__ = 'https://clinica-angular-material-production.up.railway.app' || '';
+    // Solo inyectar URL de producción si NO estamos en localhost
+    // Si estamos en localhost, api-config.ts usará http://localhost:3000
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // En producción (Railway), inyectar la URL del backend
+      window.__API_BASE_URL__ = 'https://clinica-angular-material-production.up.railway.app';
+    } else {
+      // En desarrollo, dejar que api-config.ts detecte localhost automáticamente
+      window.__API_BASE_URL__ = undefined;
+    }
   </script>
 </head>
 <body>

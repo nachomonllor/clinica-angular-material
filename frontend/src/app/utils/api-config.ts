@@ -13,7 +13,8 @@ export function getApiBaseUrl(): string {
   if (typeof window !== 'undefined') {
     // Intentar leer de window.__API_BASE_URL__ (si se inyecta en runtime)
     const runtimeApiUrl = (window as any).__API_BASE_URL__;
-    if (runtimeApiUrl) {
+    // Solo usar si está definida y no es undefined/null/string vacío
+    if (runtimeApiUrl && typeof runtimeApiUrl === 'string' && runtimeApiUrl.trim() !== '') {
       return runtimeApiUrl;
     }
   }
