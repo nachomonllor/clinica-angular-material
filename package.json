@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "bash build.sh",
-    "start": "cd backend && npx prisma migrate deploy && npm run start:prod"
+    "start": "cd backend && npx prisma migrate deploy && NODE_ENV=production node dist/main"
   },
   "repository": {
     "type": "git",
