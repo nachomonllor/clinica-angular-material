@@ -51,6 +51,8 @@
 bash build.sh
 ```
 
+**⚠️ IMPORTANTE**: El script `build.sh` está en la raíz del repositorio
+
 **Opción B: Comando directo (si el script no funciona)**
 ```bash
 npm install && cd ../frontend && npm install && npm run build -- --configuration production && cd ../backend && npx prisma generate && npx prisma migrate deploy && npm run build
