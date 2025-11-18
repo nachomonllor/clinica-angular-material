@@ -30,7 +30,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post("login")
-  login(@Body() _: LoginDto, @Req() req: AuthenticatedRequest) {
+  async login(@Body() _: LoginDto, @Req() req: AuthenticatedRequest) {
     console.log(`[AuthController] Login intento - User: ${req.user?.id}, Session: ${!!req.session}`);
     
     if (!req.user || !req.session) {
