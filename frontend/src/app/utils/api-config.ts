@@ -1,26 +1,40 @@
 /**
  * Configuración de la URL base de la API
  * 
- * En producción (cuando el backend sirve el frontend):
- * - Usa rutas relativas (vacío = mismo dominio)
- * 
- * En desarrollo:
- * - Usa http://localhost:3000 (backend en puerto 3000)
+ * Orden de prioridad:
+ * 1. Variable de entorno API_BASE_URL (si está definida) - para deploy separado
+ * 2. Si no es localhost, usar rutas relativas (backend sirve frontend en mismo dominio)
+ * 3. En desarrollo local, usar http://localhost:3000
  */
 export function getApiBaseUrl(): string {
-  // Si estamos en producción (servido por el backend en el mismo dominio)
+  // Opción 1: Si hay una variable de entorno API_BASE_URL, usarla (para servicios separados)
+  // En Angular, las variables de entorno se inyectan en build time
+  // Pero también podemos leerlas del window si se inyectan en runtime
+  if (typeof window !== 'undefined') {
+    // Intentar leer de window.__API_BASE_URL__ (si se inyecta en runtime)
+    const runtimeApiUrl = (window as any).__API_BASE_URL__;
+    if (runtimeApiUrl) {
+      return runtimeApiUrl;
+    }
+  }
+
+  // Opción 2: Si estamos en producción pero en mismo dominio (backend sirve frontend)
   // usar rutas relativas (vacío = mismo origen)
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     
-    // Si NO es localhost, estamos en producción
-    // Usar rutas relativas (el backend sirve el frontend en el mismo dominio)
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      return ''; // Ruta relativa = mismo dominio
+    // Si es localhost, usar localhost:3000
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:3000';
     }
+    
+    // Si NO es localhost y no hay API_BASE_URL definida,
+    // asumir que el backend sirve el frontend en el mismo dominio
+    // (usar rutas relativas)
+    return ''; // Ruta relativa = mismo dominio
   }
   
-  // En desarrollo, usar localhost:3000
+  // Fallback para desarrollo
   return 'http://localhost:3000';
 }
 

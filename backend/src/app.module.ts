@@ -14,8 +14,7 @@ import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [PrismaModule, UsersModule, AuthModule, AvailabilityModule, SlotsModule, AppointmentsModule, MedicalRecordsModule, ReportsModule, EmailModule, StorageModule],
-  // AppController comentado para que el frontend se sirva en la ruta raíz en producción
-  // controllers: [AppController],
-  // providers: [AppService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

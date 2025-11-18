@@ -8,6 +8,12 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- Google reCAPTCHA v2 -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Inyectar API_BASE_URL desde variable de entorno o usar URL por defecto del backend -->
+  <script>
+    // Si hay una variable de entorno API_BASE_URL, usarla (para servicios separados en Railway)
+    // Si no, el api-config.ts usará rutas relativas o localhost según corresponda
+    window.__API_BASE_URL__ = 'https://clinica-angular-material-production.up.railway.app' || '';
+  </script>
 </head>
 <body>
   <app-root></app-root>
