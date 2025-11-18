@@ -25,14 +25,12 @@ export class SlotsService {
 
     return this.http.get<AppointmentSlot[]>(`${API_BASE_URL}/slots`, {
       params: httpParams,
-      withCredentials: true,
     });
   }
 
   // Obtener todas las especialidades disponibles (que tienen especialistas asignados)
   getAllAvailableSpecialties() {
     return this.http.get<Specialty[]>(`${API_BASE_URL}/slots/specialties`, {
-      withCredentials: true,
     });
   }
 }

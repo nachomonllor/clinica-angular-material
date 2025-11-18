@@ -152,7 +152,6 @@ export class EstadisticasComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       const especialistas = await this.http
         .get<User[]>(`${API_BASE_URL}/admin/users?role=SPECIALIST`, {
-          withCredentials: true,
         })
         .toPromise();
       if (especialistas) {

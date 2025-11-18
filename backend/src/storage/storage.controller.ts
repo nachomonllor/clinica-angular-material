@@ -12,12 +12,12 @@ import {
   BadRequestException,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import type { SessionUser } from "../auth/types/session-user";
 import { StorageService } from "./storage.service";
 
-@UseGuards(SessionAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller("storage")
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}

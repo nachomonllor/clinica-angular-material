@@ -24,7 +24,6 @@ export class UsersService {
   getMySpecialties() {
     return this.http.get<Array<{ id: number; nombre: string; slug: string }>>(
       `${API_BASE_URL}/specialists/me/specialties`,
-      { withCredentials: true }
     );
   }
 
@@ -32,7 +31,6 @@ export class UsersService {
   getSpecialistSpecialties(especialistaId: number) {
     return this.http.get<Array<{ id: number; nombre: string; slug: string }>>(
       `${API_BASE_URL}/specialists/${especialistaId}/specialties`,
-      { withCredentials: true }
     );
   }
 }

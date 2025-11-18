@@ -24,7 +24,6 @@ export class StorageService {
     return this.http.post<UploadImageResponse>(
       `${API_BASE_URL}/storage/profile-image`,
       formData,
-      { withCredentials: true }
     );
   }
 
@@ -36,7 +35,6 @@ export class StorageService {
   deleteProfileImage(filename: string) {
     return this.http.delete<{ success: boolean }>(
       `${API_BASE_URL}/storage/profile-image/${filename}`,
-      { withCredentials: true }
     );
   }
 

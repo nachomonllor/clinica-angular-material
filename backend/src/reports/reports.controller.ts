@@ -2,10 +2,10 @@ import { Controller, Get, Query, UseGuards } from "@nestjs/common";
 import { AppointmentStatus } from "@prisma/client";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { RolesGuard } from "../auth/guards/roles.guard";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { ReportsService } from "./reports.service";
 
-@UseGuards(SessionAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles("ADMIN")
 @Controller("admin/reports")
 export class ReportsController {

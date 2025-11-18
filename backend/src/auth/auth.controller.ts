@@ -13,7 +13,7 @@ import { RegisterDto } from "./dto/create-auth.dto";
 import { LoginDto } from "./dto/login.dto";
 import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { SessionAuthGuard } from "./guards/session-auth.guard";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
 type AuthenticatedRequest = Request & {
   user?: any;
@@ -33,8 +33,8 @@ export class AuthController {
   async login(@Body() _: LoginDto, @Req() req: AuthenticatedRequest) {
     console.log(`[AuthController] Login intento - User: ${req.user?.id}, Session: ${!!req.session}`);
     
-    if (!req.user || !req.session) {
-      console.log(`[AuthController] ❌ Login fallido - Usuario o sesión no válidos`);
+    if (!req.user) {
+      console.log(`[AuthController] ❌ Login fallido - Usuario no válido`);
       throw new UnauthorizedException();
     }
 
@@ -44,78 +44,31 @@ export class AuthController {
       undefined;
     const userAgent = req.headers["user-agent"];
 
-    const loginResult = await this.authService.login(req.user as any, req.session, ip, userAgent);
+    // Usar sesión si está disponible, sino null (JWT funciona sin sesión)
+    const loginResult = await this.authService.login(req.user as any, req.session || null, ip, userAgent);
     
     console.log(`[AuthController] ✅ Login exitoso para usuario: ${req.user.id}`);
-    console.log(`[AuthController] Session ID: ${req.sessionID}`);
-    console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}, path=${req.session.cookie?.path}`);
-    console.log(`[AuthController] Session.user después del login:`, req.session.user ? `✅ ${req.session.user.id}` : '❌ No existe');
-    
-    // Marcar la sesión como modificada para forzar que express-session establezca la cookie
-    req.session.touch();
-    
-    // Asegurar que la sesión se guarde y que la respuesta se espere
-    const res = (req as any).res;
-    await new Promise<void>((resolve) => {
-      req.session.save((err) => {
-        if (err) {
-          console.error(`[AuthController] Error al guardar sesión:`, err);
-        } else {
-          console.log(`[AuthController] ✅ Sesión guardada definitivamente, Session ID: ${req.sessionID}`);
-          
-          // Verificar los headers después de guardar
-          const setCookieHeader = res.getHeader('Set-Cookie');
-          console.log(`[AuthController] Headers Set-Cookie después de guardar:`, setCookieHeader || 'No establecido');
-          
-          // Si no hay Set-Cookie, intentar establecerla manualmente
-          if (!setCookieHeader && req.sessionID) {
-            const cookieName = 'connect.sid'; // Nombre configurado en main.ts
-            const cookieValue = req.sessionID;
-            const cookieOptions = req.session.cookie;
-            
-            // Construir el string de cookie con formato correcto
-            const parts = [
-              `${cookieName}=${cookieValue}`,
-              `Path=${cookieOptions.path || '/'}`,
-              `SameSite=${cookieOptions.sameSite || 'None'}`,
-            ];
-            
-            // Secure e HttpOnly son flags booleanos, no tienen valor
-            if (cookieOptions.secure !== false) {
-              parts.push('Secure');
-            }
-            if (cookieOptions.httpOnly !== false) {
-              parts.push('HttpOnly');
-            }
-            
-            // Max-Age
-            const maxAge = cookieOptions.maxAge ? Math.floor(cookieOptions.maxAge / 1000) : 86400;
-            parts.push(`Max-Age=${maxAge}`);
-            
-            const cookieString = parts.join('; ');
-            
-            res.setHeader('Set-Cookie', cookieString);
-            console.log(`[AuthController] ⚠️ Set-Cookie establecido manualmente: ${cookieString}`);
-          }
-        }
-        resolve();
-      });
-    });
+    console.log(`[AuthController] JWT token generado: ${loginResult.token ? '✅ Sí' : '❌ No'}`);
     
     return loginResult;
   }
 
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post("logout")
-  logout(@Req() req: Request) {
-    return this.authService.logout(req.session);
+  logout() {
+    // Con JWT, el logout es simplemente borrar el token del cliente
+    // No hay sesión que destruir
+    return { success: true };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get("session")
-  session(@Req() req: Request) {
-    console.log(`[AuthController] Session check - Session existe: ${!!req.session}, User existe: ${!!req.session?.user}`);
-    console.log(`[AuthController] Cookies recibidas:`, req.headers.cookie ? 'Sí' : 'No');
-    return this.authService.session(req.session);
+  session(@Req() req: AuthenticatedRequest) {
+    // Con JWT, el user viene de req.user (validado por JwtAuthGuard)
+    if (!req.user) {
+      return { user: null };
+    }
+    return { user: req.user };
   }
 
   @Post("verify-email")

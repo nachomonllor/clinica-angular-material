@@ -37,7 +37,6 @@ export class ReportsService {
       `${API_BASE_URL}/admin/reports/turnos-por-especialidad`,
       {
         params: httpParams,
-        withCredentials: true,
       },
     );
   }
@@ -51,7 +50,6 @@ export class ReportsService {
       `${API_BASE_URL}/admin/reports/turnos-por-dia`,
       {
         params: httpParams,
-        withCredentials: true,
       },
     );
   }
@@ -67,7 +65,6 @@ export class ReportsService {
       `${API_BASE_URL}/admin/reports/turnos-por-medico`,
       {
         params: httpParams,
-        withCredentials: true,
       },
     );
   }
@@ -81,7 +78,6 @@ export class ReportsService {
       `${API_BASE_URL}/admin/reports/turnos-finalizados-por-medico`,
       {
         params: httpParams,
-        withCredentials: true,
       },
     );
   }

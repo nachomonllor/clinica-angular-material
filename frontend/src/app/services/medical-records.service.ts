@@ -19,7 +19,7 @@ export class MedicalRecordsService {
   getPatientRecords(patientId: string) {
     return this.http.get<MedicalRecord[]>(
       `${API_BASE_URL}/medical-records/admin/patient/${patientId}`,
-      { withCredentials: true },
+,
     );
   }
 
@@ -27,7 +27,7 @@ export class MedicalRecordsService {
   getSpecialistPatients() {
     return this.http.get<Array<User & { paciente?: { obraSocial: string } }>>(
       `${API_BASE_URL}/medical-records/specialist/patients`,
-      { withCredentials: true },
+,
     );
   }
 
@@ -35,7 +35,7 @@ export class MedicalRecordsService {
   getSpecialistPatientHistory(patientId: string) {
     return this.http.get<MedicalRecord[]>(
       `${API_BASE_URL}/medical-records/specialist/patient/${patientId}`,
-      { withCredentials: true },
+,
     );
   }
 }

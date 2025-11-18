@@ -24,7 +24,8 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.session?.user;
+    // Intentar leer user de req.user (JWT) o req.session.user (sesión) para compatibilidad
+    const user = request.user || request.session?.user;
 
     if (!user) {
       throw new UnauthorizedException();

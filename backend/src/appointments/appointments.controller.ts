@@ -14,7 +14,7 @@ import { AppointmentStatus, UserRole } from "@prisma/client";
 import type { Request } from "express";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import type { SessionUser } from "../auth/types/session-user";
 import { AppointmentsService } from "./appointments.service";
@@ -23,7 +23,7 @@ import { CreateAppointmentDto } from "./dto/create-appointment.dto";
 import { FinalizeAppointmentDto } from "./dto/finalize-appointment.dto";
 import { QueryAppointmentsDto } from "./dto/query-appointments.dto";
 
-@UseGuards(SessionAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller("appointments")
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}

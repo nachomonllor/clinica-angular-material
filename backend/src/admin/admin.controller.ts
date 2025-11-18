@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "@prisma/client";
 
 @Controller("admin")
-@UseGuards(SessionAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 export class AdminController {
   constructor(private readonly prisma: PrismaService) {}

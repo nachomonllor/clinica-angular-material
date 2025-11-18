@@ -12,7 +12,7 @@ import {
 } from "@nestjs/common";
 import { UserRole } from "@prisma/client";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import { AvailabilityService } from "./availability.service";
 import { CreateAvailabilityDto } from "./dto/create-availability.dto";
@@ -24,7 +24,7 @@ import { UpdateAvailabilityDto } from "./dto/update-availability.dto";
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 
-  @UseGuards(SessionAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SPECIALIST)
   @Post()
   create(@Body() createAvailabilityDto: CreateAvailabilityDto) {
@@ -41,7 +41,7 @@ export class AvailabilityController {
     return this.availabilityService.findOne(id);
   }
 
-  @UseGuards(SessionAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SPECIALIST)
   @Patch(":id")
   update(
@@ -51,14 +51,14 @@ export class AvailabilityController {
     return this.availabilityService.update(id, updateAvailabilityDto);
   }
 
-  @UseGuards(SessionAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SPECIALIST)
   @Delete(":id")
   remove(@Param("id", ParseIntPipe) id: number) {
     return this.availabilityService.remove(id);
   }
 
-  @UseGuards(SessionAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SPECIALIST)
   @Post("specialist/:especialistaId/generate-slots")
   generateSlots(

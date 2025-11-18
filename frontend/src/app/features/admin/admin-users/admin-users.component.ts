@@ -779,7 +779,7 @@ export class AdminUsersComponent implements OnInit {
     this.loading = true;
     this.error = "";
     this.http
-      .get<User[]>(`${API_BASE_URL}/admin/users`, { withCredentials: true })
+      .get<User[]>(`${API_BASE_URL}/admin/users`)
       .subscribe({
         next: (data) => {
           this.users = data || [];
@@ -901,7 +901,6 @@ export class AdminUsersComponent implements OnInit {
 
     this.http
       .post<User>(`${API_BASE_URL}/admin/users`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (newUser) => {

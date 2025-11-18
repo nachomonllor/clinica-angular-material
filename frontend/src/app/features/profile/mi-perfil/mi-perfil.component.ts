@@ -1084,7 +1084,6 @@ export class MiPerfilComponent implements OnInit {
     // Actualizar el perfil del usuario (usando endpoint propio, no admin)
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {
@@ -1117,7 +1116,6 @@ export class MiPerfilComponent implements OnInit {
 
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {
@@ -1149,7 +1147,6 @@ export class MiPerfilComponent implements OnInit {
 
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {
@@ -1181,7 +1178,6 @@ export class MiPerfilComponent implements OnInit {
 
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {
@@ -1213,7 +1209,6 @@ export class MiPerfilComponent implements OnInit {
 
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {
@@ -1250,7 +1245,6 @@ export class MiPerfilComponent implements OnInit {
     // Actualizar el perfil del usuario (usando endpoint propio, no admin)
     this.http
       .patch<User>(`${API_BASE_URL}/users/me`, payload, {
-        withCredentials: true,
       })
       .subscribe({
         next: (updatedUser) => {

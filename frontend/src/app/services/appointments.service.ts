@@ -74,7 +74,7 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/cancel`,
       { note },
-      { withCredentials: true },
+,
     );
   }
 
@@ -82,7 +82,7 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/accept`,
       {},
-      { withCredentials: true },
+,
     );
   }
 
@@ -90,7 +90,7 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/reject`,
       { note },
-      { withCredentials: true },
+,
     );
   }
 
@@ -98,7 +98,7 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/finalize`,
       dto,
-      { withCredentials: true },
+,
     );
   }
 
@@ -106,7 +106,7 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/patient-review`,
       { note },
-      { withCredentials: true },
+,
     );
   }
 }

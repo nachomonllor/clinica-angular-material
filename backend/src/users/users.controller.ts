@@ -12,7 +12,7 @@ import {
 import { UserRole } from "@prisma/client";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { SessionAuthGuard } from "../auth/guards/session-auth.guard";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import type { SessionUser } from "../auth/types/session-user";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -21,7 +21,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { UpdateUserStatusDto } from "./dto/update-user-status.dto";
 import { UsersService } from "./users.service";
 
-@UseGuards(SessionAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 @Controller("admin/users")
 export class UsersController {
@@ -57,7 +57,7 @@ export class UsersController {
   }
 }
 
-@UseGuards(SessionAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.SPECIALIST, UserRole.ADMIN)
 @Controller("specialists")
 export class SpecialistsController {
@@ -76,7 +76,7 @@ export class SpecialistsController {
   }
 }
 
-@UseGuards(SessionAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller("users")
 export class MyProfileController {
   constructor(private readonly usersService: UsersService) {}

@@ -33,7 +33,7 @@ export class AvailabilityService {
     return this.http.patch<SpecialistAvailability>(
       `${API_BASE_URL}/availability/${id}`,
       dto,
-      { withCredentials: true },
+,
     );
   }
 
@@ -41,7 +41,7 @@ export class AvailabilityService {
     return this.http.post<{ created: number }>(
       `${API_BASE_URL}/availability/specialist/${especialistaId}/generate-slots`,
       dto ?? {},
-      { withCredentials: true },
+,
     );
   }
 }
