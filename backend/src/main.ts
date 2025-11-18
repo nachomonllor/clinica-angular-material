@@ -32,9 +32,10 @@ async function bootstrap() {
     corsOrigin = ["http://localhost:4200", "http://localhost:3000"];
     console.log(`[Main] CORS configurado para desarrollo: ${JSON.stringify(corsOrigin)}`);
   } else {
-    // Fallback: permitir todos los orígenes (menos seguro, pero funcional)
+    // En producción sin FRONTEND_URL, permitir todos los orígenes (menos seguro pero funcional)
+    // Esto permite que funcione incluso si no está configurado FRONTEND_URL
     corsOrigin = true;
-    console.log(`[Main] CORS configurado para permitir todos los orígenes (fallback)`);
+    console.log(`[Main] CORS configurado para permitir todos los orígenes (fallback - configurar FRONTEND_URL para mayor seguridad)`);
   }
   
   app.enableCors({
@@ -53,15 +54,18 @@ async function bootstrap() {
   };
   
   // Para producción HTTPS con dominios diferentes, usar sameSite: "none" y secure: true
-  // Para desarrollo o localhost, usar sameSite: "lax" (funciona entre puertos diferentes de localhost)
-  if (isProduction && hasFrontendUrl) {
-    // Producción con servicios separados en HTTPS
+  // Esto es necesario para que las cookies funcionen en cross-origin HTTPS
+  // Si hay FRONTEND_URL configurado, asumimos que son servicios separados (cross-origin)
+  // En Railway/cloud, generalmente estamos en HTTPS, así que usamos secure: true
+  if (isProduction) {
+    // En producción, siempre usar sameSite: "none" y secure: true para cross-origin HTTPS
+    // Esto funciona tanto si el frontend está en el mismo dominio como si está separado
     cookieConfig.sameSite = "none";
-    cookieConfig.secure = true; // Requerido para sameSite: "none"
+    cookieConfig.secure = true; // Requerido para sameSite: "none" y para HTTPS
   } else {
-    // Desarrollo o mismo dominio: sameSite: "lax" funciona para localhost:4200 -> localhost:3000
+    // Desarrollo local: sameSite: "lax" funciona para localhost:4200 -> localhost:3000
     cookieConfig.sameSite = "lax";
-    cookieConfig.secure = false;
+    cookieConfig.secure = false; // No requerido en localhost HTTP
   }
   
   app.use(
