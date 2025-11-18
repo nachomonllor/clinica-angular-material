@@ -73,10 +73,29 @@ export class AuthController {
             const cookieValue = req.sessionID;
             const cookieOptions = req.session.cookie;
             
-            const cookieString = `${cookieName}=${cookieValue}; Path=${cookieOptions.path || '/'}; SameSite=${cookieOptions.sameSite || 'None'}; Secure=${cookieOptions.secure || true}; HttpOnly=${cookieOptions.httpOnly || true}; Max-Age=${cookieOptions.maxAge ? Math.floor(cookieOptions.maxAge / 1000) : 86400}`;
+            // Construir el string de cookie con formato correcto
+            const parts = [
+              `${cookieName}=${cookieValue}`,
+              `Path=${cookieOptions.path || '/'}`,
+              `SameSite=${cookieOptions.sameSite || 'None'}`,
+            ];
+            
+            // Secure e HttpOnly son flags booleanos, no tienen valor
+            if (cookieOptions.secure !== false) {
+              parts.push('Secure');
+            }
+            if (cookieOptions.httpOnly !== false) {
+              parts.push('HttpOnly');
+            }
+            
+            // Max-Age
+            const maxAge = cookieOptions.maxAge ? Math.floor(cookieOptions.maxAge / 1000) : 86400;
+            parts.push(`Max-Age=${maxAge}`);
+            
+            const cookieString = parts.join('; ');
             
             res.setHeader('Set-Cookie', cookieString);
-            console.log(`[AuthController] ⚠️ Set-Cookie establecido manualmente: ${cookieString.substring(0, 50)}...`);
+            console.log(`[AuthController] ⚠️ Set-Cookie establecido manualmente: ${cookieString}`);
           }
         }
         resolve();
