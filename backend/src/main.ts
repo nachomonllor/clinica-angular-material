@@ -42,51 +42,62 @@ async function bootstrap() {
     app.use("/uploads", express.static(uploadsDir));
   }
 
-  // Servir archivos estáticos del frontend Angular (solo en producción)
+  // Servir archivos estáticos del frontend Angular (solo en producción y si existe)
   // En desarrollo, el frontend corre en puerto 4200 separado
   const nodeEnv = process.env.NODE_ENV || "development";
   if (nodeEnv === "production") {
     const frontendDistPath = process.env.FRONTEND_DIST_PATH || join(process.cwd(), "..", "frontend", "dist", "frontend", "browser");
+    const fs = require("fs");
+    const indexHtmlPath = join(frontendDistPath, "index.html");
     
-    // Rutas de API que NO deben servir el frontend
-    const apiRoutes = [
-      "/api",
-      "/auth",
-      "/admin",
-      "/appointments",
-      "/availability",
-      "/slots",
-      "/medical-records",
-      "/storage",
-      "/specialists",
-      "/uploads",
-    ];
-
-    // Servir archivos estáticos del frontend PRIMERO
-    // Esto permite que archivos JS, CSS, imágenes se sirvan directamente
-    app.use(express.static(frontendDistPath));
-
-    // Middleware catch-all para SPA routing (sirve index.html para rutas no-API)
-    // Este middleware se ejecuta ANTES de las rutas de NestJS para capturar rutas del frontend
-    // Pero respeta las rutas de API
-    app.use((req, res, next) => {
-      // Si es una ruta de API, pasar al siguiente middleware (NestJS la manejará)
-      const isApiRoute = apiRoutes.some((route) => req.path.startsWith(route));
-      const isStaticFile = req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
+    // Solo servir el frontend si el directorio existe y tiene index.html
+    const frontendExists = fs.existsSync(frontendDistPath) && fs.existsSync(indexHtmlPath);
+    
+    if (frontendExists) {
+      console.log(`[Main] Frontend encontrado en: ${frontendDistPath}`);
       
-      if (isApiRoute || isStaticFile) {
-        return next();
-      }
-      
-      // Para rutas del frontend (SPA routing), servir index.html
-      // Esto se ejecuta ANTES del AppController, así que la ruta "/" sirve el frontend
-      res.sendFile(join(frontendDistPath, "index.html"), (err) => {
-        if (err) {
-          console.error("[Main] Error al servir index.html:", err);
-          next(err);
+      // Rutas de API que NO deben servir el frontend
+      const apiRoutes = [
+        "/api",
+        "/auth",
+        "/admin",
+        "/appointments",
+        "/availability",
+        "/slots",
+        "/medical-records",
+        "/storage",
+        "/specialists",
+        "/uploads",
+      ];
+
+      // Servir archivos estáticos del frontend PRIMERO
+      // Esto permite que archivos JS, CSS, imágenes se sirvan directamente
+      app.use(express.static(frontendDistPath));
+
+      // Middleware catch-all para SPA routing (sirve index.html para rutas no-API)
+      // Este middleware se ejecuta ANTES de las rutas de NestJS para capturar rutas del frontend
+      // Pero respeta las rutas de API
+      app.use((req, res, next) => {
+        // Si es una ruta de API, pasar al siguiente middleware (NestJS la manejará)
+        const isApiRoute = apiRoutes.some((route) => req.path.startsWith(route));
+        const isStaticFile = req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
+        
+        if (isApiRoute || isStaticFile) {
+          return next();
         }
+        
+        // Para rutas del frontend (SPA routing), servir index.html
+        // Usar res.sendFile con path absoluto
+        res.sendFile(indexHtmlPath, (err) => {
+          if (err) {
+            console.error("[Main] Error al servir index.html:", err);
+            next(err);
+          }
+        });
       });
-    });
+    } else {
+      console.log(`[Main] Frontend no encontrado en: ${frontendDistPath} - Solo sirviendo API backend`);
+    }
   }
 
   await app.listen(process.env.PORT ?? 3000);
