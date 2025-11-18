@@ -9,40 +9,21 @@ import { AppModule } from "./app.module";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Configurar CORS para producción (cross-origin) o desarrollo (same-origin)
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
+  // Configurar CORS: PERMISIVO - permitir todos los orígenes
   const nodeEnv = process.env.NODE_ENV || "development";
   const isProduction = nodeEnv === "production";
   
-  // Determinar si frontend y backend están en dominios/puertos diferentes
-  const hasFrontendUrl = !!process.env.FRONTEND_URL;
+  // En producción, permitir TODOS los orígenes (más permisivo)
+  // En desarrollo, permitir localhost:4200 y localhost:3000
+  const corsOrigin = isProduction ? true : ["http://localhost:4200", "http://localhost:3000"];
   
-  // En producción con servicios separados, permitir el dominio del frontend explícitamente
-  // En desarrollo, permitir localhost:4200 explícitamente
-  let corsOrigin: string | string[] | boolean | undefined;
-  
-  if (isProduction && hasFrontendUrl && process.env.FRONTEND_URL) {
-    // En producción, usar FRONTEND_URL si está configurado
-    // Si FRONTEND_URL contiene múltiples URLs (separadas por coma), parsearlas
-    const frontendUrls = process.env.FRONTEND_URL.split(",").map((url) => url.trim());
-    corsOrigin = frontendUrls.length === 1 ? frontendUrls[0] : frontendUrls;
-    console.log(`[Main] CORS configurado para producción con FRONTEND_URL: ${JSON.stringify(corsOrigin)}`);
-  } else if (!isProduction) {
-    // En desarrollo, permitir localhost:4200 y localhost:3000
-    corsOrigin = ["http://localhost:4200", "http://localhost:3000"];
-    console.log(`[Main] CORS configurado para desarrollo: ${JSON.stringify(corsOrigin)}`);
-  } else {
-    // En producción sin FRONTEND_URL, permitir todos los orígenes (menos seguro pero funcional)
-    // Esto permite que funcione incluso si no está configurado FRONTEND_URL
-    corsOrigin = true;
-    console.log(`[Main] CORS configurado para permitir todos los orígenes (fallback - configurar FRONTEND_URL para mayor seguridad)`);
-  }
+  console.log(`[Main] CORS configurado: ${isProduction ? "PERMITIR TODOS LOS ORÍGENES (producción)" : `localhost (desarrollo)`}`);
   
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   });
 
   app.use(cookieParser());
@@ -77,9 +58,8 @@ async function bootstrap() {
     }),
   );
   
-  console.log(`[Main] CORS configurado para origen: ${JSON.stringify(corsOrigin)}`);
   console.log(`[Main] Cookies configuradas: sameSite=${cookieConfig.sameSite}, secure=${cookieConfig.secure}`);
-  console.log(`[Main] NODE_ENV: ${nodeEnv}, FRONTEND_URL: ${process.env.FRONTEND_URL || "no configurado"}`);
+  console.log(`[Main] NODE_ENV: ${nodeEnv}`);
 
   app.useGlobalPipes(
     new ValidationPipe({
