@@ -5,12 +5,9 @@ import { HttpClient } from "@angular/common/http";
 import { ReportsService } from "../../../services/reports.service";
 import { SlotsService } from "../../../services/slots.service";
 import { UsersService } from "../../../services/users.service";
-import { StatusLabelPipe } from "../../../pipes/status-label.pipe";
 import { RoleLabelPipe } from "../../../pipes/role-label.pipe";
 import { LocalDatePipe } from "../../../pipes/local-date.pipe";
-import { StatusBadgeDirective } from "../../../directives/status-badge.directive";
 import { ElevateOnHoverDirective } from "../../../directives/elevate-on-hover.directive";
-import { AutoFocusDirective } from "../../../directives/auto-focus.directive";
 import { exportToExcel, generateFilename } from "../../../utils/excel.util";
 import { generateReportPDF } from "../../../utils/reports-pdf.util";
 import type {
@@ -61,15 +58,12 @@ type TabType = "logins" | "turnos-especialidad" | "turnos-dia" | "turnos-medico"
 @Component({
   selector: "app-estadisticas",
   standalone: true,
-  imports: [
+    imports: [
     CommonModule,
     FormsModule,
-    StatusLabelPipe,
     RoleLabelPipe,
     LocalDatePipe,
-    StatusBadgeDirective,
     ElevateOnHoverDirective,
-    AutoFocusDirective,
   ],
   templateUrl: "./estadisticas.component.html",
   styleUrl: "./estadisticas.component.scss",

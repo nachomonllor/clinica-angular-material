@@ -6,12 +6,15 @@ import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AppointmentsService } from "../../../services/appointments.service";
 import { AuthService } from "../../../services/auth.service";
+import { StatusLabelPipe } from "../../../pipes/status-label.pipe";
+import { StatusBadgeDirective } from "../../../directives/status-badge.directive";
+import { AutoFocusDirective } from "../../../directives/auto-focus.directive";
 import type { Appointment, AppointmentStatus } from "../../../models/appointment.model";
 
 @Component({
   selector: "app-mis-turnos-paciente",
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, StatusLabelPipe, StatusBadgeDirective, AutoFocusDirective],
   template: `
     <main class="page">
       <section class="card">
@@ -48,8 +51,8 @@ import type { Appointment, AppointmentStatus } from "../../../models/appointment
                   {{ formatDate(app.slot.date) }} - {{ formatTime(app.slot.startAt) }}
                 </p>
               </div>
-              <span class="badge" [class]="'badge-' + app.status.toLowerCase()">
-                {{ getStatusLabel(app.status) }}
+              <span [appStatusBadge]="app.status">
+                {{ app.status | statusLabel }}
               </span>
             </div>
 
@@ -110,6 +113,7 @@ import type { Appointment, AppointmentStatus } from "../../../models/appointment
           placeholder="Ingresá el motivo de cancelación (mínimo 10 caracteres)"
           rows="4"
           class="textarea"
+          [appAutoFocus]="0"
         ></textarea>
         <div class="dialog-actions">
           <button class="btn secondary" (click)="closeCancelDialog()">Cancelar</button>
@@ -145,6 +149,7 @@ import type { Appointment, AppointmentStatus } from "../../../models/appointment
           placeholder="Ingresá tu comentario (mínimo 10 caracteres)"
           rows="4"
           class="textarea"
+          [appAutoFocus]="0"
         ></textarea>
         <div class="dialog-actions">
           <button class="btn secondary" (click)="closeRatingDialog()">Cancelar</button>
@@ -454,16 +459,6 @@ export class MisTurnosPacienteComponent implements OnInit, OnDestroy {
     return date.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
   }
 
-  getStatusLabel(status: AppointmentStatus): string {
-    const labels: Record<AppointmentStatus, string> = {
-      PENDING: "Pendiente",
-      ACCEPTED: "Aceptado",
-      DONE: "Realizado",
-      CANCELLED: "Cancelado",
-      REJECTED: "Rechazado",
-    };
-    return labels[status] || status;
-  }
 
   cancelarTurno(app: Appointment) {
     this.selectedAppointment.set(app);

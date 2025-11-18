@@ -11,9 +11,10 @@ import { MedicalRecordsModule } from './medical-records/medical-records.module';
 import { ReportsModule } from './reports/reports.module';
 import { EmailModule } from './email/email.module';
 import { StorageModule } from './storage/storage.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, AvailabilityModule, SlotsModule, AppointmentsModule, MedicalRecordsModule, ReportsModule, EmailModule, StorageModule],
+  imports: [PrismaModule, UsersModule, AuthModule, AvailabilityModule, SlotsModule, AppointmentsModule, MedicalRecordsModule, ReportsModule, EmailModule, StorageModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

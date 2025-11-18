@@ -20,9 +20,11 @@ export class StatusBadgeDirective {
   private estadoInterno: EstadoTurno | undefined;
 
   @HostBinding("class.badge") baseClass = true;
-  @HostBinding("class.badge-ok") ok = false;
-  @HostBinding("class.badge-warn") warn = false;
-  @HostBinding("class.badge-bad") bad = false;
+  @HostBinding("class.badge-pending") pending = false;
+  @HostBinding("class.badge-accepted") accepted = false;
+  @HostBinding("class.badge-done") done = false;
+  @HostBinding("class.badge-cancelled") cancelled = false;
+  @HostBinding("class.badge-rejected") rejected = false;
 
   @Input()
   set appStatusBadge(value: string | EstadoTurno | null | undefined) {
@@ -32,22 +34,27 @@ export class StatusBadgeDirective {
   }
 
   private actualizarClases(): void {
+    // Reset todas las clases
+    this.pending = false;
+    this.accepted = false;
+    this.done = false;
+    this.cancelled = false;
+    this.rejected = false;
+
     const estado = this.estadoInterno;
-    this.ok =
-      estado === "realizado" ||
-      estado === "done" ||
-      estado === "aceptado" ||
-      estado === "accepted";
-    this.warn =
-      estado === "pendiente" ||
-      estado === "pending" ||
-      estado === "aceptado" ||
-      estado === "accepted";
-    this.bad =
-      estado === "cancelado" ||
-      estado === "cancelled" ||
-      estado === "rechazado" ||
-      estado === "rejected";
+    
+    // Aplicar clase según el estado
+    if (estado === "pending" || estado === "pendiente") {
+      this.pending = true;
+    } else if (estado === "accepted" || estado === "aceptado") {
+      this.accepted = true;
+    } else if (estado === "done" || estado === "realizado") {
+      this.done = true;
+    } else if (estado === "cancelled" || estado === "cancelado") {
+      this.cancelled = true;
+    } else if (estado === "rejected" || estado === "rechazado") {
+      this.rejected = true;
+    }
   }
 }
 
