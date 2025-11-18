@@ -31,7 +31,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   login(@Body() _: LoginDto, @Req() req: AuthenticatedRequest) {
+    console.log(`[AuthController] Login intento - User: ${req.user?.id}, Session: ${!!req.session}`);
+    
     if (!req.user || !req.session) {
+      console.log(`[AuthController] ❌ Login fallido - Usuario o sesión no válidos`);
       throw new UnauthorizedException();
     }
 
@@ -41,7 +44,11 @@ export class AuthController {
       undefined;
     const userAgent = req.headers["user-agent"];
 
-    return this.authService.login(req.user as any, req.session, ip, userAgent);
+    const result = this.authService.login(req.user as any, req.session, ip, userAgent);
+    console.log(`[AuthController] ✅ Login exitoso para usuario: ${req.user.id}`);
+    console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}`);
+    
+    return result;
   }
 
   @UseGuards(SessionAuthGuard)
@@ -52,6 +59,8 @@ export class AuthController {
 
   @Get("session")
   session(@Req() req: Request) {
+    console.log(`[AuthController] Session check - Session existe: ${!!req.session}, User existe: ${!!req.session?.user}`);
+    console.log(`[AuthController] Cookies recibidas:`, req.headers.cookie ? 'Sí' : 'No');
     return this.authService.session(req.session);
   }
 
