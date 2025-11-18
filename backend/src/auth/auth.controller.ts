@@ -51,23 +51,37 @@ export class AuthController {
     console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}, path=${req.session.cookie?.path}`);
     console.log(`[AuthController] Session.user después del login:`, req.session.user ? `✅ ${req.session.user.id}` : '❌ No existe');
     
-    // Asegurar que la sesión se guarde antes de enviar la respuesta
+    // Marcar la sesión como modificada para forzar que express-session establezca la cookie
+    req.session.touch();
+    
+    // Asegurar que la sesión se guarde y que la respuesta se espere
+    const res = (req as any).res;
     await new Promise<void>((resolve) => {
-      req.session.save(() => {
-        console.log(`[AuthController] ✅ Sesión guardada definitivamente, Session ID: ${req.sessionID}`);
-        
-        // Loggear los headers de respuesta que se enviarán
-        const res = (req as any).res;
-        console.log(`[AuthController] Headers de respuesta Set-Cookie:`, res.getHeader('Set-Cookie') || 'No establecido');
-        
+      req.session.save((err) => {
+        if (err) {
+          console.error(`[AuthController] Error al guardar sesión:`, err);
+        } else {
+          console.log(`[AuthController] ✅ Sesión guardada definitivamente, Session ID: ${req.sessionID}`);
+          
+          // Verificar los headers después de guardar
+          const setCookieHeader = res.getHeader('Set-Cookie');
+          console.log(`[AuthController] Headers Set-Cookie después de guardar:`, setCookieHeader || 'No establecido');
+          
+          // Si no hay Set-Cookie, intentar establecerla manualmente
+          if (!setCookieHeader && req.sessionID) {
+            const cookieName = req.session.cookie.name || 'connect.sid';
+            const cookieValue = req.sessionID;
+            const cookieOptions = req.session.cookie;
+            
+            const cookieString = `${cookieName}=${cookieValue}; Path=${cookieOptions.path || '/'}; SameSite=${cookieOptions.sameSite || 'None'}; Secure=${cookieOptions.secure || true}; HttpOnly=${cookieOptions.httpOnly || true}; Max-Age=${cookieOptions.maxAge ? Math.floor(cookieOptions.maxAge / 1000) : 86400}`;
+            
+            res.setHeader('Set-Cookie', cookieString);
+            console.log(`[AuthController] ⚠️ Set-Cookie establecido manualmente: ${cookieString.substring(0, 50)}...`);
+          }
+        }
         resolve();
       });
     });
-    
-    // Asegurar que la cookie se establezca explícitamente
-    const res = (req as any).res;
-    const cookieHeader = res.getHeader('Set-Cookie');
-    console.log(`[AuthController] Cookie Set-Cookie después de guardar:`, cookieHeader || 'No establecido');
     
     return loginResult;
   }
