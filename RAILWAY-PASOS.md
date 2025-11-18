@@ -72,10 +72,10 @@ npm install && cd ../frontend && npm install && npm run build -- --configuration
 
 1. En **"Settings"** del servicio backend
 2. Buscar **"Start Command"**
-3. Escribir: `cd backend && npm run start:prod`
+3. Escribir: `npm start` (o `cd backend && npm run start:prod`)
 4. Guardar
 
-**⚠️ IMPORTANTE**: Como el Root Directory es `.` (raíz), necesitamos entrar a `backend/` antes de ejecutar el comando
+**⚠️ IMPORTANTE**: Como el Root Directory es `.` (raíz), el `package.json` raíz tiene el script `start` configurado
 
 ---
 

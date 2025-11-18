@@ -1,0 +1,19 @@
+{
+  "name": "clinica-online",
+  "version": "1.0.0",
+  "description": "Clínica Online - Sistema de Gestión de Turnos Médicos",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "bash build.sh",
+    "start": "cd backend && npm run start:prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nachomonllor/clinica-angular-material.git"
+  }
+}
+
