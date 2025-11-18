@@ -16,18 +16,25 @@ async function bootstrap() {
   
   // Determinar si frontend y backend están en dominios/puertos diferentes
   const hasFrontendUrl = !!process.env.FRONTEND_URL;
-  const isCrossOrigin = hasFrontendUrl || !isProduction;
   
   // En producción con servicios separados, permitir el dominio del frontend explícitamente
   // En desarrollo, permitir localhost:4200 explícitamente
   let corsOrigin: string | string[] | boolean | undefined;
-  if (isProduction && hasFrontendUrl) {
-    corsOrigin = process.env.FRONTEND_URL;
+  
+  if (isProduction && hasFrontendUrl && process.env.FRONTEND_URL) {
+    // En producción, usar FRONTEND_URL si está configurado
+    // Si FRONTEND_URL contiene múltiples URLs (separadas por coma), parsearlas
+    const frontendUrls = process.env.FRONTEND_URL.split(",").map((url) => url.trim());
+    corsOrigin = frontendUrls.length === 1 ? frontendUrls[0] : frontendUrls;
+    console.log(`[Main] CORS configurado para producción con FRONTEND_URL: ${JSON.stringify(corsOrigin)}`);
   } else if (!isProduction) {
     // En desarrollo, permitir localhost:4200 y localhost:3000
     corsOrigin = ["http://localhost:4200", "http://localhost:3000"];
+    console.log(`[Main] CORS configurado para desarrollo: ${JSON.stringify(corsOrigin)}`);
   } else {
+    // Fallback: permitir todos los orígenes (menos seguro, pero funcional)
     corsOrigin = true;
+    console.log(`[Main] CORS configurado para permitir todos los orígenes (fallback)`);
   }
   
   app.enableCors({
@@ -66,8 +73,9 @@ async function bootstrap() {
     }),
   );
   
-  console.log(`[Main] CORS configurado para origen: ${corsOrigin}`);
+  console.log(`[Main] CORS configurado para origen: ${JSON.stringify(corsOrigin)}`);
   console.log(`[Main] Cookies configuradas: sameSite=${cookieConfig.sameSite}, secure=${cookieConfig.secure}`);
+  console.log(`[Main] NODE_ENV: ${nodeEnv}, FRONTEND_URL: ${process.env.FRONTEND_URL || "no configurado"}`);
 
   app.useGlobalPipes(
     new ValidationPipe({
