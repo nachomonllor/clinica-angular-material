@@ -55,9 +55,19 @@ export class AuthController {
     await new Promise<void>((resolve) => {
       req.session.save(() => {
         console.log(`[AuthController] ✅ Sesión guardada definitivamente, Session ID: ${req.sessionID}`);
+        
+        // Loggear los headers de respuesta que se enviarán
+        const res = (req as any).res;
+        console.log(`[AuthController] Headers de respuesta Set-Cookie:`, res.getHeader('Set-Cookie') || 'No establecido');
+        
         resolve();
       });
     });
+    
+    // Asegurar que la cookie se establezca explícitamente
+    const res = (req as any).res;
+    const cookieHeader = res.getHeader('Set-Cookie');
+    console.log(`[AuthController] Cookie Set-Cookie después de guardar:`, cookieHeader || 'No establecido');
     
     return loginResult;
   }
