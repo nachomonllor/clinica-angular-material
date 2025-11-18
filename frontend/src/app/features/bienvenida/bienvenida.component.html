@@ -7,7 +7,7 @@
     <nav class="top-actions">
       <div *ngIf="autenticado() && currentUser()" class="user-info">
         <span class="user-name">{{ currentUser()?.nombre }} {{ currentUser()?.apellido }}</span>
-        <span class="user-role">{{ currentUser()?.role }}</span>
+        <span class="user-role">{{ currentUser()?.role | roleLabel }}</span>
       </div>
       <a class="btn btn-primary" routerLink="/login" *ngIf="!autenticado()">
         <span>🔐</span> Ingresar
@@ -58,7 +58,7 @@
       <div class="cta-row" *ngIf="autenticado() && currentUser()">
         <div class="welcome-message">
           <p>¡Bienvenido/a, {{ currentUser()?.nombre }}!</p>
-          <p class="role-badge">Rol: {{ currentUser()?.role }}</p>
+          <p class="role-badge">Rol: {{ currentUser()?.role | roleLabel }}</p>
         </div>
         <button class="btn btn-flat btn-primary" (click)="irADashboard()">
           <span>📊</span> Ir a mi Panel

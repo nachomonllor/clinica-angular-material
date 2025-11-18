@@ -4,11 +4,12 @@ import { RouterModule, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { RoleLabelPipe } from '../../pipes/role-label.pipe';
 
 @Component({
   selector: 'app-bienvenida',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RoleLabelPipe],
   templateUrl: './bienvenida.component.html',
   styleUrl: './bienvenida.component.scss',
   animations: [

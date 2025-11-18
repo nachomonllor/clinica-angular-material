@@ -9,7 +9,7 @@
 
     <div class="user-info">
       <span class="user-name">{{ nombreUsuario() }}</span>
-      <span class="user-role">{{ rolUsuario() }}</span>
+      <span class="user-role">{{ rolUsuario() | roleLabel }}</span>
     </div>
 
     <button *ngIf="esEspecialista()" class="btn-nav" routerLink="/mis-pacientes">

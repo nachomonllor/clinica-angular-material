@@ -2,12 +2,13 @@ import { Component, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule, Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
+import { RoleLabelPipe } from "../../pipes/role-label.pipe";
 import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RoleLabelPipe],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.scss",
 })

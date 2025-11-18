@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet, NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
+import { LoadingOverlayComponent } from './components/loading-overlay/loading-overlay.component';
 import { AuthService } from './services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -9,7 +12,7 @@ import { routeAnimationsAdvanced } from './animations/route.animations';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [CommonModule, RouterOutlet, NavbarComponent, LoadingScreenComponent, LoadingOverlayComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [routeAnimationsAdvanced],
@@ -17,6 +20,7 @@ import { routeAnimationsAdvanced } from './animations/route.animations';
 export class AppComponent implements OnInit {
   title = 'frontend';
   routeAnimationState = '';
+  showLoadingScreen = signal(true);
 
   constructor(
     private authService: AuthService,
@@ -30,6 +34,11 @@ export class AppComponent implements OnInit {
     } catch (error) {
       // Si no hay sesión, no pasa nada
       console.log('[App] No hay sesión activa');
+    } finally {
+      // Ocultar pantalla de loading inicial después de cargar la sesión
+      setTimeout(() => {
+        this.showLoadingScreen.set(false);
+      }, 500); // Esperar un poco para que se vea la animación
     }
 
     // Inicializar estado de animación

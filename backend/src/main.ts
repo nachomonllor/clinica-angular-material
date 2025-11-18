@@ -20,7 +20,7 @@ async function bootstrap() {
   
   // En producción con servicios separados, permitir el dominio del frontend explícitamente
   // En desarrollo, permitir localhost:4200 explícitamente
-  let corsOrigin: string | boolean;
+  let corsOrigin: string | string[] | boolean | undefined;
   if (isProduction && hasFrontendUrl) {
     corsOrigin = process.env.FRONTEND_URL;
   } else if (!isProduction) {
@@ -86,8 +86,7 @@ async function bootstrap() {
 
   // Servir archivos estáticos del frontend Angular (solo en producción y si existe)
   // En desarrollo, el frontend corre en puerto 4200 separado
-  const nodeEnv = process.env.NODE_ENV || "development";
-  if (nodeEnv === "production") {
+  if (isProduction) {
     const frontendDistPath = process.env.FRONTEND_DIST_PATH || join(process.cwd(), "..", "frontend", "dist", "frontend", "browser");
     const fs = require("fs");
     const indexHtmlPath = join(frontendDistPath, "index.html");
