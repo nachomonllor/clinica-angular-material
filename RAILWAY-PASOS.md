@@ -59,9 +59,11 @@ npm install && cd ../frontend && npm install && npm run build -- --configuration
 ```
 
 **Importante sobre las migraciones:**
-- `prisma migrate deploy` solo ejecuta migraciones que aún no se aplicaron
+- `prisma migrate deploy` se ejecuta en el **Start Command** (runtime), no durante el build
+- Esto evita errores de conexión a la DB durante el build (cuando la DB puede no estar disponible)
+- `prisma generate` se ejecuta durante el build (no requiere conexión a la DB)
+- Las migraciones solo ejecutan cambios que aún no se aplicaron
 - NO borra datos existentes
-- Solo crea/modifica tablas según las migraciones nuevas
 - La base de datos es persistente en Railway (los datos se mantienen entre deploys)
 
 4. Guardar
@@ -72,10 +74,13 @@ npm install && cd ../frontend && npm install && npm run build -- --configuration
 
 1. En **"Settings"** del servicio backend
 2. Buscar **"Start Command"**
-3. Escribir: `npm start` (o `cd backend && npm run start:prod`)
+3. Escribir: `npm start`
 4. Guardar
 
-**⚠️ IMPORTANTE**: Como el Root Directory es `.` (raíz), el `package.json` raíz tiene el script `start` configurado
+**⚠️ IMPORTANTE**: 
+- Como el Root Directory es `.` (raíz), el `package.json` raíz tiene el script `start` configurado
+- El script `start` ejecuta primero `prisma migrate deploy` y luego inicia el servidor
+- Las migraciones se ejecutan en runtime (no durante el build) para evitar errores de conexión a la DB
 
 ---
 

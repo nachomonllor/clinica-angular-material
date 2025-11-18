@@ -36,14 +36,15 @@ npm install
 echo "🔨 Compilando frontend..."
 npm run build -- --configuration production
 
-# Backend: Prisma y compilar
-echo "🔨 Configurando Prisma..."
+# Backend: Prisma generate y compilar
+echo "🔨 Configurando Prisma (solo generate, migraciones se ejecutan en runtime)..."
 cd "$PROJECT_ROOT/backend" || exit 1
 npx prisma generate
-npx prisma migrate deploy
 
 echo "🔨 Compilando backend..."
 npm run build
+
+echo "ℹ️  Nota: Las migraciones de Prisma se ejecutarán en el Start Command (runtime)"
 
 echo "✅ Build completado exitosamente!"
 

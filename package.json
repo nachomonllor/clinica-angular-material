@@ -4,12 +4,12 @@
   "description": "Clínica Online - Sistema de Gestión de Turnos Médicos",
   "private": true,
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "build": "bash build.sh",
-    "start": "cd backend && npm run start:prod"
+    "start": "cd backend && npx prisma migrate deploy && npm run start:prod"
   },
   "repository": {
     "type": "git",
