@@ -12,9 +12,12 @@ export class SessionAuthGuard implements CanActivate {
     
     // Logging para debug
     console.log(`[SessionAuthGuard] Validando sesión para ${request.method} ${request.path}`);
+    console.log(`[SessionAuthGuard] Session ID: ${request.sessionID || 'N/A'}`);
     console.log(`[SessionAuthGuard] Session existe: ${!!request.session}`);
     console.log(`[SessionAuthGuard] Session.user existe: ${!!request?.session?.user}`);
+    console.log(`[SessionAuthGuard] Session.user:`, request?.session?.user ? `✅ ${request.session.user.id}` : '❌ No existe');
     console.log(`[SessionAuthGuard] Cookies recibidas:`, request.headers.cookie ? Object.keys(request.cookies || {}) : 'Ninguna');
+    console.log(`[SessionAuthGuard] Cookie connect.sid:`, request.cookies?.['connect.sid'] ? '✅ Existe' : '❌ No existe');
     
     if (!request?.session?.user) {
       console.log(`[SessionAuthGuard] ❌ Sesión no válida - Unauthorized`);

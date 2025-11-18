@@ -46,7 +46,9 @@ export class AuthController {
 
     const result = this.authService.login(req.user as any, req.session, ip, userAgent);
     console.log(`[AuthController] ✅ Login exitoso para usuario: ${req.user.id}`);
+    console.log(`[AuthController] Session ID: ${req.sessionID}`);
     console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}`);
+    console.log(`[AuthController] Session.user después del login:`, req.session.user ? `✅ ${req.session.user.id}` : '❌ No existe');
     
     return result;
   }

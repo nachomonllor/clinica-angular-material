@@ -82,7 +82,7 @@ export class AuthService {
   async login(user: PublicUser, session: SessionWithUser, ip?: string, userAgent?: string) {
     if (!user) {
       throw new UnauthorizedException();
-  }
+    }
 
     session.user = {
       id: user.id,
@@ -90,6 +90,19 @@ export class AuthService {
       status: user.status,
       emailVerified: user.emailVerified,
     };
+
+    // Guardar la sesión explícitamente para asegurar persistencia
+    await new Promise<void>((resolve, reject) => {
+      session.save((err) => {
+        if (err) {
+          console.error(`[AuthService] Error al guardar sesión:`, err);
+          reject(err);
+        } else {
+          console.log(`[AuthService] ✅ Sesión guardada para usuario: ${user.id}`);
+          resolve();
+        }
+      });
+    });
 
     await this.prisma.loginLog.create({
       data: {

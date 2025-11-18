@@ -32,6 +32,8 @@ async function bootstrap() {
   const cookieConfig: any = {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24, // 24 horas
+    path: "/", // Path explícito
+    // NO establecer 'domain' para que funcione en cualquier dominio
   };
   
   // Para producción HTTPS con dominios diferentes, usar sameSite: "none" y secure: true
@@ -53,7 +55,8 @@ async function bootstrap() {
     session({
       secret: process.env.SESSION_SECRET ?? "change-me",
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: false, // No guardar sesiones vacías
+      name: "connect.sid", // Nombre explícito de la cookie
       cookie: cookieConfig,
     }),
   );
