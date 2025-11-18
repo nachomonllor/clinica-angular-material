@@ -5,6 +5,8 @@ import session from "express-session";
 import * as express from "express";
 import { join } from "path";
 import { AppModule } from "./app.module";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import { PrismaClient } from "@prisma/client";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +29,15 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+  
+  // Middleware para loggear cookies recibidas (solo en desarrollo o para debug)
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/auth/') || req.path.startsWith('/admin/')) {
+      console.log(`[Main] ${req.method} ${req.path} - Cookie connect.sid recibida:`, req.cookies?.['connect.sid'] ? `${req.cookies['connect.sid'].substring(0, 20)}...` : 'Ninguna');
+      console.log(`[Main] ${req.method} ${req.path} - Header Cookie:`, req.headers.cookie ? 'Existe' : 'No existe');
+    }
+    next();
+  });
   
   // Configurar cookies de sesión para soportar cross-origin
   const cookieConfig: any = {
@@ -51,6 +62,9 @@ async function bootstrap() {
     cookieConfig.secure = false; // No requerido en localhost HTTP
   }
   
+  // Configurar store de sesiones en Prisma para persistencia
+  const prismaClient = new PrismaClient();
+  
   app.use(
     session({
       secret: process.env.SESSION_SECRET ?? "change-me",
@@ -58,8 +72,15 @@ async function bootstrap() {
       saveUninitialized: false, // No guardar sesiones vacías
       name: "connect.sid", // Nombre explícito de la cookie
       cookie: cookieConfig,
+      store: new PrismaSessionStore(prismaClient as any, {
+        checkPeriod: 2 * 60 * 1000, // Limpiar sesiones expiradas cada 2 minutos
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+      }) as any,
     }),
   );
+  
+  console.log(`[Main] Store de sesiones: Prisma (persistente en base de datos)`);
   
   console.log(`[Main] Cookies configuradas: sameSite=${cookieConfig.sameSite}, secure=${cookieConfig.secure}`);
   console.log(`[Main] NODE_ENV: ${nodeEnv}`);

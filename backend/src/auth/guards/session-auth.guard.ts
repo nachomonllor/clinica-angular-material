@@ -17,7 +17,10 @@ export class SessionAuthGuard implements CanActivate {
     console.log(`[SessionAuthGuard] Session.user existe: ${!!request?.session?.user}`);
     console.log(`[SessionAuthGuard] Session.user:`, request?.session?.user ? `✅ ${request.session.user.id}` : '❌ No existe');
     console.log(`[SessionAuthGuard] Cookies recibidas:`, request.headers.cookie ? Object.keys(request.cookies || {}) : 'Ninguna');
-    console.log(`[SessionAuthGuard] Cookie connect.sid:`, request.cookies?.['connect.sid'] ? '✅ Existe' : '❌ No existe');
+    console.log(`[SessionAuthGuard] Cookie connect.sid:`, request.cookies?.['connect.sid'] ? `✅ Existe (${request.cookies['connect.sid'].substring(0, 20)}...)` : '❌ No existe');
+    if (request.cookies?.['connect.sid']) {
+      console.log(`[SessionAuthGuard] Cookie connect.sid completa:`, request.cookies['connect.sid']);
+    }
     
     if (!request?.session?.user) {
       console.log(`[SessionAuthGuard] ❌ Sesión no válida - Unauthorized`);

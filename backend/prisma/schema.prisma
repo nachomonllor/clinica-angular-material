@@ -255,3 +255,16 @@ model LoginLog {
 
   @@index([userId, createdAt])
 }
+
+// Tabla para almacenar sesiones de express-session
+// IMPORTANTE: El nombre debe ser "Session" (con S mayúscula) para que Prisma lo genere correctamente
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
+
+  @@index([sid])
+  @@index([expiresAt])
+  @@map("Session") // Mapear a tabla "Session" en la base de datos
+}

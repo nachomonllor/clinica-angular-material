@@ -44,13 +44,22 @@ export class AuthController {
       undefined;
     const userAgent = req.headers["user-agent"];
 
-    const result = this.authService.login(req.user as any, req.session, ip, userAgent);
+    const loginResult = await this.authService.login(req.user as any, req.session, ip, userAgent);
+    
     console.log(`[AuthController] ✅ Login exitoso para usuario: ${req.user.id}`);
     console.log(`[AuthController] Session ID: ${req.sessionID}`);
-    console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}`);
+    console.log(`[AuthController] Cookie config: sameSite=${req.session.cookie?.sameSite}, secure=${req.session.cookie?.secure}, path=${req.session.cookie?.path}`);
     console.log(`[AuthController] Session.user después del login:`, req.session.user ? `✅ ${req.session.user.id}` : '❌ No existe');
     
-    return result;
+    // Asegurar que la sesión se guarde antes de enviar la respuesta
+    await new Promise<void>((resolve) => {
+      req.session.save(() => {
+        console.log(`[AuthController] ✅ Sesión guardada definitivamente, Session ID: ${req.sessionID}`);
+        resolve();
+      });
+    });
+    
+    return loginResult;
   }
 
   @UseGuards(SessionAuthGuard)
