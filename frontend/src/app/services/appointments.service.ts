@@ -47,7 +47,6 @@ export class AppointmentsService {
 
     return this.http.get<Appointment[]>(`${API_BASE_URL}/appointments/me`, {
       params: httpParams,
-      withCredentials: true,
     });
   }
 
@@ -60,21 +59,17 @@ export class AppointmentsService {
 
     return this.http.get<Appointment[]>(`${API_BASE_URL}/appointments/admin`, {
       params: httpParams,
-      withCredentials: true,
     });
   }
 
   createAppointment(dto: CreateAppointmentDto) {
-    return this.http.post<Appointment>(`${API_BASE_URL}/appointments`, dto, {
-      withCredentials: true,
-    });
+    return this.http.post<Appointment>(`${API_BASE_URL}/appointments`, dto);
   }
 
   cancelAppointment(id: string, note?: string) {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/cancel`,
       { note },
-,
     );
   }
 
@@ -82,7 +77,6 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/accept`,
       {},
-,
     );
   }
 
@@ -90,7 +84,6 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/reject`,
       { note },
-,
     );
   }
 
@@ -98,7 +91,6 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/finalize`,
       dto,
-,
     );
   }
 
@@ -106,7 +98,6 @@ export class AppointmentsService {
     return this.http.patch<Appointment>(
       `${API_BASE_URL}/appointments/${id}/patient-review`,
       { note },
-,
     );
   }
 }

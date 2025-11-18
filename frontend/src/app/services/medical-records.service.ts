@@ -10,16 +10,13 @@ export class MedicalRecordsService {
 
   // Para pacientes: obtener sus propios registros médicos
   getMyRecords() {
-    return this.http.get<MedicalRecord[]>(`${API_BASE_URL}/medical-records/me`, {
-      withCredentials: true,
-    });
+    return this.http.get<MedicalRecord[]>(`${API_BASE_URL}/medical-records/me`);
   }
 
   // Para admins: obtener historia clínica de un paciente específico
   getPatientRecords(patientId: string) {
     return this.http.get<MedicalRecord[]>(
       `${API_BASE_URL}/medical-records/admin/patient/${patientId}`,
-,
     );
   }
 
@@ -27,7 +24,6 @@ export class MedicalRecordsService {
   getSpecialistPatients() {
     return this.http.get<Array<User & { paciente?: { obraSocial: string } }>>(
       `${API_BASE_URL}/medical-records/specialist/patients`,
-,
     );
   }
 
@@ -35,7 +31,6 @@ export class MedicalRecordsService {
   getSpecialistPatientHistory(patientId: string) {
     return this.http.get<MedicalRecord[]>(
       `${API_BASE_URL}/medical-records/specialist/patient/${patientId}`,
-,
     );
   }
 }

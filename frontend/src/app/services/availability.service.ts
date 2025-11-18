@@ -19,21 +19,17 @@ export class AvailabilityService {
 
     return this.http.get<SpecialistAvailability[]>(`${API_BASE_URL}/availability`, {
       params: httpParams,
-      withCredentials: true,
     });
   }
 
   createAvailability(dto: CreateAvailabilityDto) {
-    return this.http.post<SpecialistAvailability>(`${API_BASE_URL}/availability`, dto, {
-      withCredentials: true,
-    });
+    return this.http.post<SpecialistAvailability>(`${API_BASE_URL}/availability`, dto);
   }
 
   updateAvailability(id: number, dto: UpdateAvailabilityDto) {
     return this.http.patch<SpecialistAvailability>(
       `${API_BASE_URL}/availability/${id}`,
       dto,
-,
     );
   }
 
@@ -41,7 +37,6 @@ export class AvailabilityService {
     return this.http.post<{ created: number }>(
       `${API_BASE_URL}/availability/specialist/${especialistaId}/generate-slots`,
       dto ?? {},
-,
     );
   }
 }
