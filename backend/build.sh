@@ -3,12 +3,33 @@ set -e  # Salir si algún comando falla
 
 echo "🔨 Iniciando build..."
 
-# Asegurar que estamos en el directorio correcto
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# Railway ejecuta desde /app cuando Root Directory = backend
+# Necesitamos ir a la raíz del repo para acceder a frontend/
+CURRENT_DIR="$(pwd)"
+echo "📁 Current dir: $CURRENT_DIR"
 
+# Si estamos en /app (backend/), ir a la raíz
+if [ "$CURRENT_DIR" = "/app" ] || [ "$(basename "$CURRENT_DIR")" = "backend" ]; then
+  echo "📁 Detectado Root Directory = backend, subiendo a la raíz..."
+  cd .. || {
+    echo "❌ Error: No se pudo acceder al directorio padre"
+    exit 1
+  }
+fi
+
+PROJECT_ROOT="$(pwd)"
 echo "📁 Project root: $PROJECT_ROOT"
-echo "📁 Current dir: $(pwd)"
+
+# Verificar que existen los directorios
+if [ ! -d "backend" ]; then
+  echo "❌ Error: No se encontró el directorio backend/"
+  exit 1
+fi
+
+if [ ! -d "frontend" ]; then
+  echo "❌ Error: No se encontró el directorio frontend/"
+  exit 1
+fi
 
 # Backend: instalar dependencias
 echo "📦 Instalando dependencias del backend..."
